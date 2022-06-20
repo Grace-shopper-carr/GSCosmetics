@@ -47,8 +47,13 @@ export const addQuantity = (product) => {
 
 export const getCartThunk = () => async (dispatch) => {
   try {
-    const { data } = await Axios.get('/api/cart/');
-    const cart = data[0];
+    window.localStorage.getItem('token');
+    const { data: cart } = await Axios.get('/api/cart, {
+      headers: {
+        
+      }
+    } ');
+    // const cart = data[0];
     // console.log('data[0]',cart)
     dispatch(getCart(cart));
   } catch (error) {
