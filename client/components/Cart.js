@@ -1,6 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import { deleteFromCartThunk, getCartThunk } from "../store/cart";
+import {
+  deleteFromCartThunk,
+  fetchCartLocally,
+  getCartThunk,
+} from "../store/cart";
 
 import EditCart from "./EditCart";
 
@@ -15,11 +19,9 @@ class Cart extends React.Component {
   componentDidMount() {
     const { userId } = this.props.match.params;
     this.props.getCart(userId);
-   
   }
 
   handleClick(cartId, productId) {
-  
     this.props.deleteFromCart(cartId, productId);
   }
 
@@ -38,7 +40,7 @@ class Cart extends React.Component {
 
   render() {
     const cartProducts = this.props.products;
-  
+
     return (
       <div>
         {cartProducts ? (
@@ -58,11 +60,17 @@ class Cart extends React.Component {
                     <button
                       type="button"
                       value={product.id}
-                      onClick={()=>this.handleClick(this.props.cart.id,product.id)}
+                      onClick={() =>
+                        this.handleClick(this.props.cart.id, product.id)
+                      }
                     >
                       X
                     </button>
-                    <EditCart productId={product.id} userId={1} cartId={this.props.cart.id} />
+                    <EditCart
+                      productId={product.id}
+                      userId={1}
+                      cartId={this.props.cart.id}
+                    />
                   </div>
                 );
               })}
@@ -85,10 +93,15 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getCart: (userId) => dispatch(getCartThunk(userId)),
+  getCart: (userId) => {
+    if (userId) {
+      return dispatch(getCartThunk(userId));
+    } else {
+      return dispatch(fetchCartLocally);
+    }
+  },
   deleteFromCart: (cartId, productId) =>
     dispatch(deleteFromCartThunk(cartId, productId)),
-
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Cart);
