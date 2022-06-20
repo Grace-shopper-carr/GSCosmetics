@@ -1,5 +1,5 @@
 import Axios from "axios";
-import { addToLocal, increaseQtyLocal } from "./localStorage";
+import { addToLocal, decreaseQtyLocal, increaseQtyLocal } from "./localStorage";
 
 const GET_CART = "GET_CART";
 const ADD_TO_CART = "ADD_TO_CART";
@@ -96,6 +96,17 @@ export const removeItemLocally = (productId) => {
 //     try {
 //         increaseQtyLocal(productId);
 //         dispatch()
+//     } catch (err) {
+//       console.log(err);
+//     }
+//   };
+// };
+//
+// export const subtractQuantityLocally = (productId) => {
+//   return (dispatch) => {
+//     try {
+//       decreaseQtyLocal(productId);
+//       dispatch();
 //     } catch (err) {
 //       console.log(err);
 //     }
