@@ -2,6 +2,8 @@ const router = require("express").Router();
 const req = require("express/lib/request");
 const { Cart, Product, CartProduct } = require("../db/models");
 module.exports = router;
+
+
 //get a user's cart
 router.get("/:userId", async (req, res, next) => {
   try {
@@ -71,6 +73,73 @@ router.post("/:userId/:productId", async (req, res, next) => {
   }
 });
 
+//update a single product 
+// router.get("/:cartId/:productId", async (req, res, next) => {
+//   try {
+   
+//     const cartProduct = await CartProduct.findOne({
+//       where: {
+//         cartId: req.params.cartId,
+//         productId: req.params.productId,
+//       },
+//     });
+//     await cartProduct.quantity+1
+   
+//     res.send(cartProduct);
+
+//   } catch (err) {
+//     next(err);
+//   }
+// });
+router.put('/plusOne/:userId/:productId', async (req, res, next) => {
+  try {
+    const product = await Product.findByPk(req.params.productId)
+    const cart = await Cart.findOne({
+      where: {
+        userId: req.params.userId,
+      },
+      include: Product,
+    })
+    const cartproduct = await CartProduct.findOne({
+      where: {cartId: cart.id, productId: product.id}
+    })
+    const updatedTotalQty = cartproduct.quantity + 1
+    await cart.addProduct(product, {through: {quantity: updatedTotalQty}})
+    // console.log(cartproduct)
+    res.send(cartproduct)
+  } catch (error) {
+    next(error)
+  }
+})
+
+
+router.put('/minusOne/:userId/:productId', async (req, res, next) => {
+  try {
+    const product = await Product.findByPk(req.params.productId)
+    const cart = await Cart.findOne({
+      where: {
+        userId: req.params.userId,
+      },
+      include: Product,
+    })
+    const cartproduct = await CartProduct.findOne({
+      where: {cartId: cart.id, productId: product.id}
+    })
+
+    const updatedTotalQty = cartproduct.quantity - 1
+    if (updatedTotalQty <= 0) {
+      updatedTotalQty = 1
+    } else {
+      await cart.addProduct(product, {through: {quantity: updatedTotalQty}})
+    }
+    // console.log(cartproduct)
+    res.send(cartproduct)
+  } catch (error) {
+    next(error)
+  }
+})
+
+
 //remove a product from cart
 router.delete("/:cartId/:productId", async (req, res, next) => {
   try {
@@ -102,7 +171,7 @@ router.get("/:userId/:cartId", async (req, res, next) => {
         cartId: cart.id,
       },
     });
-    console.log(cartProduct)
+    // console.log(cartProduct)
     res.send(cartProduct);
   } catch (error) {
     next(error);

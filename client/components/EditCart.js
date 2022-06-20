@@ -1,13 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
 import { getCartProductThunk } from "../store/cartProduct";
-import { addToCartThunk } from "../store/cart";
+import { addQuantityThunk,subQuantityThunk } from "../store/cart";
+
 
 
 class EditCart extends React.Component {
   constructor() {
     super();
-    // this.handleAdd = this.handleAdd.bind(this);
+    this.handleAdd = this.handleAdd.bind(this);
+    this.handleSub = this.handleSub.bind(this);
   }
   componentDidMount() {
     
@@ -15,22 +17,30 @@ class EditCart extends React.Component {
    
   }
 
-  // handleAdd(userId,productId){
-  //   // const productId = event.target.value;
-  //   // const userId = 1;
-  //   // const userId=this.props.userId
-  //   // const productId=this.props.productId
+  handleAdd(){
+   
+    const userId=this.props.userId
+    const productId=this.props.productId
+  
+    this.props.addQuantity(userId,productId);
 
-  //   // this.props.addToCart(this.props.userId,this.props.cartId);
+  }
 
-  // }
+  handleSub(){
+   
+    const userId=this.props.userId
+    const productId=this.props.productId
+  
+    this.props.subQuantity(userId,productId);
+
+  }
  
 
   render() {
-   console.log('cartProduct',this.props.cartProduct)
+  //  console.log('cartProduct',this.props.cartProduct)
     return (
       <div>
-        <button> + </button>
+        <button onClick={this.handleAdd}> + </button>
         {this.props.cartProduct ?
         <div>
           {this.props.cartProduct.map((product)=>{
@@ -46,7 +56,7 @@ class EditCart extends React.Component {
         </div>
         :(<p>-</p>)
         }
-          <button onClick={()=>handleReduce()}> - </button>
+          <button onClick={this.handleSub}> - </button>
        
       </div>
     );
@@ -60,8 +70,10 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   getCartProduct: (userId, cartId) =>
     dispatch(getCartProductThunk(userId, cartId)),
-  addToCart: (userId, productId) =>
-    dispatch(addToCartThunk(userId, productId)),
+  addQuantity : (userId, productId) =>
+    dispatch(addQuantityThunk (userId, productId)),
+  subQuantity : (userId, productId) =>
+    dispatch(subQuantityThunk (userId, productId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditCart);

@@ -55,7 +55,7 @@ const mapDispatchToProps = (dispatch) => {
     singleProduct: (id) => dispatch(singleProduct(id)),
     addToCart: (userId, productId) => {
       if (userId) {
-        dispatch(addToCartThunk(userId, productId));
+        return dispatch(addToCartThunk(userId, productId));
       } else {
         return dispatch(addItemLocally);
       }
