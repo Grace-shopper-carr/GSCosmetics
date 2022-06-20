@@ -1,11 +1,11 @@
-import Axios from "axios";
+import Axios from 'axios';
 
-const GET_CART = "GET_CART";
-const ADD_TO_CART = "ADD_TO_CART";
-const DELETE_FROM_CART = "DELETE_FROM_CART";
-const PLACE_ORDER = "PLACE_ORDER";
-const SUB_QUANTITY = 'SUB_QUANTITY'
-const ADD_QUANTITY = 'ADD_QUANTITY'
+const GET_CART = 'GET_CART';
+const ADD_TO_CART = 'ADD_TO_CART';
+const DELETE_FROM_CART = 'DELETE_FROM_CART';
+const PLACE_ORDER = 'PLACE_ORDER';
+const SUB_QUANTITY = 'SUB_QUANTITY';
+const ADD_QUANTITY = 'ADD_QUANTITY';
 
 const getCart = (cart) => {
   return {
@@ -30,24 +30,24 @@ const deleteFromCart = (productId) => ({
 //     newCart,
 // });
 //WHATS SENT BACK FROM BACKEND TO UPDATE STATE
-export const subtractQuantity = product => {
+export const subtractQuantity = (product) => {
   return {
     type: SUB_QUANTITY,
-    product
-  }
-}
+    product,
+  };
+};
 
 //WHATS SENT BACK FROM BACKEND TO UPDATE STATE
-export const addQuantity = product => {
+export const addQuantity = (product) => {
   return {
     type: ADD_QUANTITY,
-    product
-  }
-}
+    product,
+  };
+};
 
-export const getCartThunk = (userId) => async (dispatch) => {
+export const getCartThunk = () => async (dispatch) => {
   try {
-    const { data } = await Axios.get(`/api/cart/${userId}`);
+    const { data } = await Axios.get('/api/cart/');
     const cart = data[0];
     // console.log('data[0]',cart)
     dispatch(getCart(cart));
@@ -56,9 +56,9 @@ export const getCartThunk = (userId) => async (dispatch) => {
   }
 };
 
-export const addToCartThunk = (userId, productId) => async (dispatch) => {
+export const addToCartThunk = (productId) => async (dispatch) => {
   try {
-    const { data } = await Axios.post(`/api/cart/${userId}/${productId}`);
+    const { data } = await Axios.post(`/api/cart/${productId}`);
     dispatch(addToCart(data));
     // console.log("cartproduct", data);
   } catch (error) {
@@ -77,7 +77,9 @@ export const deleteFromCartThunk = (cartId, productId) => async (dispatch) => {
 
 export const addQuantityThunk = (userId, productId) => async (dispatch) => {
   try {
-    const { data } = await Axios.put(`/api/cart/plusOne/${userId}/${productId}`);
+    const { data } = await Axios.put(
+      `/api/cart/plusOne/${userId}/${productId}`
+    );
     dispatch(addQuantity(data));
     // console.log("data", data);
   } catch (error) {
@@ -87,7 +89,9 @@ export const addQuantityThunk = (userId, productId) => async (dispatch) => {
 
 export const subQuantityThunk = (userId, productId) => async (dispatch) => {
   try {
-    const { data } = await Axios.put(`/api/cart/minusOne/${userId}/${productId}`)
+    const { data } = await Axios.put(
+      `/api/cart/minusOne/${userId}/${productId}`
+    );
     dispatch(subtractQuantity(data));
     // console.log("data", data);
   } catch (error) {
@@ -109,7 +113,7 @@ export default function cartReducer(state = { products: [] }, action) {
         ),
       };
     case ADD_QUANTITY:
-      return { ...state, products: [...state.products, action.product]};
+      return { ...state, products: [...state.products, action.product] };
     case SUB_QUANTITY:
       return { ...state, products: [...state.products, action.product] };
     default:
