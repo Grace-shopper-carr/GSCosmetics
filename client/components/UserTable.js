@@ -2,25 +2,22 @@ import React, { Component } from "react";
 import MaterialTable, { MTableToolbar } from "material-table";
 import tableIcons from "./MaterialTableIcons";
 import { connect } from "react-redux";
-import { fetchProducts } from "../store/products";
+import { fetchUsers } from "../store/createUser";
 
 const columns = [
-    { title: "Brand Name", field: "brandName" },
-    { title: "Product Name", field: "productName" },
-    { title: "Product Type", field: "productType" },
-    { title: "Price", field: "price" },
-    { title: "Stock", field: "stock" },
+    { title: "Email", field: "email" },
+    { title: "User Type", field: "userType" },
 ];
 
-class ProductTable extends Component {
+class UserTable extends Component {
     componentDidMount() {
-        this.props.fetchProducts();
+        this.props.fetchUsers();
     }
 
     render() {
         return (
             <MaterialTable
-                title={"Product Table"}
+                title={"User Table"}
                 icons={tableIcons}
                 options={{
                     grouping: true,
@@ -33,18 +30,19 @@ class ProductTable extends Component {
                     Toolbar: (props) => <MTableToolbar {...props} />,
                 }}
                 columns={columns}
-                data={this.props.products}
+                data={this.props.users}
             />
         );
     }
 }
 
 const mapStateToProps = (state) => ({
-    products: state.products,
+    // pay attention to the reducer name
+    users: state.createUserReducer,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    fetchProducts: () => dispatch(fetchProducts()),
+    fetchUsers: () => dispatch(fetchUsers()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductTable);
+export default connect(mapStateToProps, mapDispatchToProps)(UserTable);

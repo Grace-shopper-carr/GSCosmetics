@@ -11,19 +11,6 @@ router.get("/", async (req, res, next) => {
     }
 });
 
-router.get("/eye", async (req, res, next) => {
-    try {
-        const eyeProducts = await Product.findAll({
-            where: {
-                productType: "eye",
-            },
-        });
-        res.json(eyeProducts);
-    } catch (err) {
-        next(err);
-    }
-});
-
 router.get("/:id", async (req, res, next) => {
     try {
         const product = await Product.findOne({
@@ -36,6 +23,19 @@ router.get("/:id", async (req, res, next) => {
         next(err);
     }
 });
+
+// router.get("/eye", async (req, res, next) => {
+//     try {
+//         const eyeProducts = await Product.findAll({
+//             where: {
+//                 productType: "eye",
+//             },
+//         });
+//         res.json(eyeProducts);
+//     } catch (err) {
+//         next(err);
+//     }
+// });
 
 // router.get('/face', async (req, res, next) => {
 //   try {

@@ -1,16 +1,16 @@
 import React from "react";
 import ProductTable from "./ProductTable";
+import UserTable from "./UserTable";
 
-class Admin extends React.Component {
-    render() {
-        return (
+const Admin = () => {
+    return (
+        <div>
             <div>
-                <div>
-                    <ProductTable />
-                </div>
+                <ProductTable />
+                <UserTable />
             </div>
-        );
-    }
-}
+        </div>
+    );
+};
 
 export default Admin;
