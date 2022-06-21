@@ -3,6 +3,9 @@ import { connect } from "react-redux";
 import { deleteFromCartThunk, getCartThunk } from "../store/cart";
 import { getCartProductThunk } from "../store/cartProduct";
 import EditCart from "./EditCart";
+// import {Elements} from '@stripe/react-stripe-js';
+// import {loadStripe} from '@stripe/stripe-js';
+import StripeCheckout from 'react-stripe-checkout'
 
 class Cart extends React.Component {
   constructor() {
@@ -85,6 +88,7 @@ class Cart extends React.Component {
         ) : (
           <h1>Your Cart is Empty!</h1>
         )}
+        < StripeCheckout  />
       </div>
     );
   }
