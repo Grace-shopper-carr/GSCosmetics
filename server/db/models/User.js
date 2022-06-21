@@ -24,6 +24,10 @@ const User = db.define("user", {
     creditCard: {
         type: Sequelize.STRING,
     },
+    userType: {
+        type: Sequelize.ENUM("customer", "admin"),
+        defaultValue: "customer",
+    },
 });
 
 module.exports = User;
@@ -78,6 +82,19 @@ const hashPassword = async (user) => {
     }
 };
 
+const validAdmin = async (user) => {
+    const count = await User.count();
+
+    // If this is NOT the first user, then it cannot be an admin
+    if (count != 0 && user.userType == "admin") {
+        user.userType = "customer";
+    }
+};
+
 User.beforeCreate(hashPassword);
 User.beforeUpdate(hashPassword);
 User.beforeBulkCreate((users) => Promise.all(users.map(hashPassword)));
+
+User.beforeCreate(validAdmin);
+User.beforeUpdate(validAdmin);
+User.beforeBulkCreate((users) => Promise.all(users.map(validAdmin)));

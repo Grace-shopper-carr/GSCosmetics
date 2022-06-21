@@ -23,8 +23,10 @@ class Routes extends Component {
     }
 
     render() {
-        const { isLoggedIn } = this.props;
+        const { isLoggedIn, isAdmin } = this.props;
 
+        // NOTE: Be careful with conditional redirects. Redirects must be okay in all conditions!
+        // NOTE: Components load too fast, so conditional redirects may be tricky to implement!
         return (
             <div>
                 {isLoggedIn ? (
@@ -33,15 +35,30 @@ class Routes extends Component {
                         <Route exact path="/products/lip" component={Lip} />
                         <Route exact path="/products/face" component={Face} />
                         <Route exact path="/products/nail" component={Nail} />
-                        <Route path="/signup" component={CreateUser} />
+                        <Route exact path="/signup" component={CreateUser} />
                         <Route exact path="/products" component={AllProducts} />
                         <Route exact path="/cart/:userId" component={Cart} />
-                        <Route exact path="/login/admin" component={Admin} />
+
+                        {isAdmin && (
+                            <Route
+                                exact
+                                path="/login/admin"
+                                component={Admin}
+                            />
+                        )}
+
+                        {isAdmin ? (
+                            <Redirect from="/login" to="/login/admin" />
+                        ) : (
+                            <Redirect from="/login" to="/" />
+                        )}
+
                         <Route
                             exact
                             path="/products/:id"
                             component={SingleProduct}
                         />
+
                         <Route path="/" component={Home} />
                     </Switch>
                 ) : (
@@ -50,11 +67,12 @@ class Routes extends Component {
                         <Route exact path="/products/lip" component={Lip} />
                         <Route exact path="/products/face" component={Face} />
                         <Route exact path="/products/nail" component={Nail} />
-                        <Route path="/login" component={Login} />
-                        <Route path="/signup" component={CreateUser} />
+                        <Route exact path="/login" component={Login} />
+                        <Route exact path="/signup" component={CreateUser} />
                         <Route exact path="/products" component={AllProducts} />
                         <Route exact path="/" component={Home} />
                         <Route exact path="/cart/:userId" component={Cart} />
+
                         <Route
                             exact
                             path="/products/:id"
@@ -77,6 +95,7 @@ const mapStateToProps = (state) => {
         // Otherwise, state.auth will be an empty object, and state.auth.id will be falsey
         // if id exist, isLoggedIn is true; otherwise, false
         isLoggedIn: !!state.auth.id,
+        isAdmin: state.auth.userType == "admin",
     };
 };
 

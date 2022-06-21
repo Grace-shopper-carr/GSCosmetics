@@ -103,6 +103,21 @@ const products = [
     },
 ];
 
+const adminUsers = [
+    {
+        email: "admint@1.com",
+        password: "test",
+        userType: "admin",
+    },
+    {
+        email: "bellahadid@gmail.com",
+        password: "theweekend",
+        deliveryAddress: "380 72 Rd Santa Barbara, CA",
+        creditCard: "2580 3069 5479 8150",
+        userType: "admin",
+    },
+];
+
 const users = [
     {
         email: "timotheechalamet@gmail.com",
@@ -133,12 +148,7 @@ const users = [
         password: "washingmachineheart",
         deliveryAddress: "43 beach st, Phoenix, AZ",
         creditCard: "4586 9080 7272 2348",
-    },
-    {
-        email: "bellahadid@gmail.com",
-        password: "theweekend",
-        deliveryAddress: "380 72 Rd Santa Barbara, CA",
-        creditCard: "2580 3069 5479 8150",
+        userType: "admin", // this will fail back to customer
     },
 ];
 
@@ -146,6 +156,15 @@ const seed = async () => {
     try {
         await db.sync({ force: true });
 
+        // Only the first users can be admin. Sequelize create runs so fast in parallel that all users here can be the "first" user.
+        // All users here can be admins
+        await Promise.all(
+            adminUsers.map((user) => {
+                return User.create(user);
+            })
+        );
+
+        // Database now has more than one user, so no more users can be admin
         await Promise.all(
             users.map((user) => {
                 return User.create(user);
