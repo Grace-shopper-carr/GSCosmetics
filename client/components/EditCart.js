@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { getCartProductThunk } from "../store/cartProduct";
-import { addQuantityThunk,subQuantityThunk } from "../store/cart";
+import { addQuantityThunk,subQuantityThunk } from "../store/cartProduct";
 
 
 

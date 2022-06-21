@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const req = require("express/lib/request");
+
 const { Cart, Product, CartProduct } = require("../db/models");
 module.exports = router;
 
@@ -20,21 +20,7 @@ router.get("/:userId", async (req, res, next) => {
   }
 });
 
-// //get a user's past order history
-// router.get("/orders/:userId", async (req, res, next) => {
-//   try {
-//     const orders = await Cart.findAll({
-//       where: {
-//         userId: req.params.userId,
-//         isCompleted: true,
-//       },
-//       include: Product,
-//       CartProduct,
-//     });
-//   } catch (err) {
-//     next(err);
-//   }
-// });
+
 
 //add to a user's cart
 router.post("/:userId/:productId", async (req, res, next) => {
@@ -73,24 +59,7 @@ router.post("/:userId/:productId", async (req, res, next) => {
   }
 });
 
-//update a single product 
-// router.get("/:cartId/:productId", async (req, res, next) => {
-//   try {
-   
-//     const cartProduct = await CartProduct.findOne({
-//       where: {
-//         cartId: req.params.cartId,
-//         productId: req.params.productId,
-//       },
-//     });
-//     await cartProduct.quantity+1
-   
-//     res.send(cartProduct);
-
-//   } catch (err) {
-//     next(err);
-//   }
-// });
+//update a single product's quantity 
 router.put('/plusOne/:userId/:productId', async (req, res, next) => {
   try {
     const product = await Product.findByPk(req.params.productId)
@@ -103,10 +72,13 @@ router.put('/plusOne/:userId/:productId', async (req, res, next) => {
     const cartproduct = await CartProduct.findOne({
       where: {cartId: cart.id, productId: product.id}
     })
-    const updatedTotalQty = cartproduct.quantity + 1
+    const updatedTotalQty = await cartproduct.quantity + 1
     await cart.addProduct(product, {through: {quantity: updatedTotalQty}})
     // console.log(cartproduct)
-    res.send(cartproduct)
+    const cartproduct1 = await CartProduct.findOne({
+      where: {cartId: cart.id, productId: product.id}
+    })
+    res.send(cartproduct1)
   } catch (error) {
     next(error)
   }
@@ -126,14 +98,18 @@ router.put('/minusOne/:userId/:productId', async (req, res, next) => {
       where: {cartId: cart.id, productId: product.id}
     })
 
-    const updatedTotalQty = cartproduct.quantity - 1
+    const updatedTotalQty = await cartproduct.quantity - 1
     if (updatedTotalQty <= 0) {
       updatedTotalQty = 1
     } else {
       await cart.addProduct(product, {through: {quantity: updatedTotalQty}})
     }
-    // console.log(cartproduct)
-    res.send(cartproduct)
+    // console.log(cart)
+    const cartproduct1 = await CartProduct.findOne({
+      where: {cartId: cart.id, productId: product.id}
+    })
+    res.send(cartproduct1)
+    1
   } catch (error) {
     next(error)
   }
@@ -178,14 +154,3 @@ router.get("/:userId/:cartId", async (req, res, next) => {
   }
 });
 
-// //update
-// router.put("/:userId/:productId", async (req, res, next) => {
-//   try {
-//     const cart = await Cart.findByPk(req.params.id);
-//     const product = await Product.findByPk(req.params.productId);
-//     await cart.removeProduct(product);
-//     res.send(cart);
-//   } catch (err) {
-//     next(err);
-//   }
-// });

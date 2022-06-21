@@ -1,11 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import {
-  deleteFromCartThunk,
-  fetchCartLocally,
-  getCartThunk,
-} from "../store/cart";
-
+import { deleteFromCartThunk, getCartThunk } from "../store/cart";
+import { getCartProductThunk } from "../store/cartProduct";
 import EditCart from "./EditCart";
 
 class Cart extends React.Component {
@@ -17,7 +13,6 @@ class Cart extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
   componentDidMount() {
-    
     const { userId } = this.props.match.params;
     this.props.getCart(userId);
   }
@@ -28,12 +23,22 @@ class Cart extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props !== prevProps) {
-      const cartProducts = this.props.products;
-      if (cartProducts) {
+      const products = this.props.products;
+      const qty = this.props.cartProduct.map((product) => {
+        return product.quantity;
+      });
+
+      if (products) {
         const prices = this.props.products.map((product) => {
           return product.price;
         });
-        let total = prices.reduce((partialSum, a) => partialSum + a, 0);
+
+        let pricesQty = [];
+        for (var i = 0; i < prices.length; i++) {
+          pricesQty.push(prices[i] * qty[i]);
+        }
+
+        let total = pricesQty.reduce((partialSum, a) => partialSum + a, 0);
         this.setState({ total: total });
       }
     }
@@ -65,7 +70,7 @@ class Cart extends React.Component {
                         this.handleClick(this.props.cart.id, product.id)
                       }
                     >
-                      X
+                      Remove
                     </button>
                     <EditCart
                       productId={product.id}
@@ -103,6 +108,8 @@ const mapDispatchToProps = (dispatch) => ({
   },
   deleteFromCart: (cartId, productId) =>
     dispatch(deleteFromCartThunk(cartId, productId)),
+  getCartProduct: (userId, cartId) =>
+    dispatch(getCartProductThunk(userId, cartId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Cart);
