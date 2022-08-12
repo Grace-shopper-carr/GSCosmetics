@@ -4,6 +4,10 @@
 
 https://www.npmjs.com/package/react-simple-image-slider/v/2.2.0 
 
+## Please visit the website 
+
+https://gscosmetics.herokuapp.com/
+
 ## Start
 
 Sync and seed your database by running `npm run seed`. Running `npm run start:dev` will make great things happen!
